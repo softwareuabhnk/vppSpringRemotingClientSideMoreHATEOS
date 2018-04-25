@@ -29,22 +29,15 @@ public class RestClient {
 		 HttpHeaders headers = new HttpHeaders();
 		 List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
 		 acceptableMediaTypes.add(MediaType.IMAGE_JPEG);
-		 acceptableMediaTypes.add(MediaType.APPLICATION_JSON);
+		 acceptableMediaTypes.add(MediaType.APPLICATION_XML);
 		 headers.setAccept(acceptableMediaTypes);
 		 
 		 HttpEntity requestEntity = new HttpEntity(headers);
 		 
-		 try {
-		 HttpEntity response = template.exchange("http://localhost:8080/mywebapp/customer/100035",
-				                              HttpMethod.GET, requestEntity, String.class);
-		 System.out.println("Successfully found customer" + response.getBody());
+		 HttpEntity<CustomerCollectionRepresentation> response = template.exchange("http://localhost:8080/mywebapp/customers",
+				                              HttpMethod.GET, requestEntity, CustomerCollectionRepresentation.class);
+		 
+		 CustomerCollectionRepresentation result = response.getBody();
+		 System.out.println(result);
 		 }
-		 // Definitely a 404 
-		 catch (ResourceNotFoundException e ) {
-			 
-			 System.out.println("Sorry the customer was not found ");
-			 System.out.println("The message returned back was " + e.getErrorObject().getMessage());
-		 }
-	}
-
 }

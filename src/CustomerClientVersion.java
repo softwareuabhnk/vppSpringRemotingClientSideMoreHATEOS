@@ -50,4 +50,8 @@ public class CustomerClientVersion {
 		this.notes = notes;
 	}
 	
+	public String toString() {
+		return this.customerId + " " + this.getCompanyName();
+	}
+	
 }
