@@ -5,9 +5,8 @@ import java.util.List;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 public class RestClient {
@@ -32,8 +31,26 @@ public class RestClient {
 		 acceptableMediaTypes.add(MediaType.APPLICATION_XML);
 		 headers.setAccept(acceptableMediaTypes);
 		 
-		 HttpEntity requestEntity = new HttpEntity(headers);
+		 // Post a new customer
+		 CustomerClientVersion customer = new CustomerClientVersion();
+		 customer.setCompanyName("Ericcson");
+		 customer.setNotes("Very important");
 		 
+		 ResponseEntity<CustomerClientVersion> customerEntity = template.postForEntity("http://localhost:8080/mywebapp/customers",
+				 			customer, CustomerClientVersion.class);
+		 
+		 customer = customerEntity.getBody();
+		 System.out.println(customerEntity.getStatusCode());
+		 
+		 System.out.println("The new customer has been given the id of " + customer.getCustomerId());
+		 
+		 // Update the customer
+		 customer.setCompanyName("Volvo");
+		 template.put("http://localhost:8080/mywebapp/customer/" + customer.getCustomerId(), customer);
+		 
+		 
+		 // Get customers
+		 HttpEntity<CustomerCollectionRepresentation> requestEntity = new HttpEntity<CustomerCollectionRepresentation>(headers);
 		 HttpEntity<CustomerCollectionRepresentation> response = template.exchange("http://localhost:8080/mywebapp/customers",
 				                              HttpMethod.GET, requestEntity, CustomerCollectionRepresentation.class);
 		 
